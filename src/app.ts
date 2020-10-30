@@ -13,6 +13,7 @@ import { notFoundHandler } from "./middleware/notFound.middleware";
 
 // Routes
 import { appointmentsRouter } from "./routes/appointments/appointments.router";
+import { preAppointmentsRouter } from "./routes/pre-appointments/preAppointments.router";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use(notFoundHandler);
 
 // Routes
 app.use("/appointments", appointmentsRouter);
+app.use("/preappointments", preAppointmentsRouter);
 
 /**
  * Server Activation

@@ -14,18 +14,18 @@ import { checkPermissions } from "../../middleware/permissions.middleware";
  * Router Definition
  */
 
-export const appointmentsRouter = express.Router();
+export const preAppointmentsRouter = express.Router();
 
 /**
  * Controller Definitions
  */
 
 // Middleware
-appointmentsRouter.use(checkJwt);
+preAppointmentsRouter.use(checkJwt);
 
 // GET PreAppointments/
 
-appointmentsRouter.get(
+preAppointmentsRouter.get(
   "/",
   [
     checkPermissions(
@@ -49,7 +49,7 @@ appointmentsRouter.get(
 
 // POST PreAppointments/
 
-appointmentsRouter.post(
+preAppointmentsRouter.post(
   "/",
   [
     checkPermissions(
@@ -75,7 +75,7 @@ appointmentsRouter.post(
 
 // GET PreAppointments/:id
 
-appointmentsRouter.get(
+preAppointmentsRouter.get(
   "/:id",
   [
     checkPermissions(
@@ -103,7 +103,7 @@ appointmentsRouter.get(
 
 // PUT PreAppointments/
 
-appointmentsRouter.put(
+preAppointmentsRouter.put(
   "/:id",
   [
     checkPermissions(
@@ -131,7 +131,7 @@ appointmentsRouter.put(
 
 // DELETE PreAppointments/:id
 
-appointmentsRouter.delete(
+preAppointmentsRouter.delete(
   "/:id",
   [
     checkPermissions(
