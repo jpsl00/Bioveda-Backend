@@ -43,9 +43,12 @@ export const create = async (newRecord: Appointment): Promise<void> => {
   };
 };
 
-export const update = async (updatedRecord: Appointment): Promise<void> => {
-  if (appointments[updatedRecord.id]) {
-    appointments[updatedRecord.id] = updatedRecord;
+export const update = async (
+  id: number,
+  updatedRecord: Appointment
+): Promise<void> => {
+  if (id) {
+    appointments[id] = { ...appointments[id], ...updatedRecord, id };
     return;
   }
 

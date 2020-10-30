@@ -7,6 +7,10 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
+// Middlewares
+import { errorHandler } from "./middleware/error.middleware";
+import { notFoundHandler } from "./middleware/notFound.middleware";
+
 // Routes
 import { appointmentsRouter } from "./appointments/appointments.router";
 
@@ -31,6 +35,10 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
+// Middlewares
+app.use(errorHandler);
+app.use(notFoundHandler);
 
 // Routes
 app.use("/appointments", appointmentsRouter);
