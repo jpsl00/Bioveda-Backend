@@ -3,13 +3,12 @@
  */
 
 import express, { Request, Response } from "express";
-import * as AppointmentService from "./appointment.service";
-import { Appointment } from "./appointment.interface";
-import { Appointments } from "./appointments.interface";
+import * as PreAppointmentService from "./preAppointment.service";
+import { PreAppointment } from "./preAppointment.interface";
 
-import { checkJwt } from "../middleware/authz.middleware";
-import { AppointmentPermissions } from "./appointment.permissions";
-import { checkPermissions } from "../middleware/permissions.middleware";
+import { checkJwt } from "../../middleware/authz.middleware";
+import { PreAppointmentPermissions } from "./preAppointment.permissions";
+import { checkPermissions } from "../../middleware/permissions.middleware";
 
 /**
  * Router Definition
@@ -24,22 +23,22 @@ export const appointmentsRouter = express.Router();
 // Middleware
 appointmentsRouter.use(checkJwt);
 
-// GET Appointments/
+// GET PreAppointments/
 
 appointmentsRouter.get(
   "/",
   [
     checkPermissions(
       [
-        AppointmentPermissions.ReadAppointments,
-        AppointmentPermissions.ReadSelfAppointments,
+        PreAppointmentPermissions.ReadPreAppointments,
+        PreAppointmentPermissions.ReadSelfPreAppointments,
       ],
       { checkAllScopes: false }
     ),
   ],
   async (req: Request, res: Response) => {
     try {
-      const appointments: Appointments = await AppointmentService.findAll();
+      const appointments: PreAppointment[] = await PreAppointmentService.findAll();
 
       res.status(200).send(appointments);
     } catch (e) {
@@ -48,24 +47,24 @@ appointmentsRouter.get(
   }
 );
 
-// POST Appointments/
+// POST PreAppointments/
 
 appointmentsRouter.post(
   "/",
   [
     checkPermissions(
       [
-        AppointmentPermissions.CreateAppointments,
-        AppointmentPermissions.CreateSelfAppointments,
+        PreAppointmentPermissions.CreatePreAppointments,
+        PreAppointmentPermissions.CreateSelfPreAppointments,
       ],
       { checkAllScopes: false }
     ),
   ],
   async (req: Request, res: Response) => {
     try {
-      const appointment: Appointment = req.body.appointment;
+      const preAppointment: PreAppointment = req.body.appointment;
 
-      await AppointmentService.create(appointment);
+      await PreAppointmentService.create(preAppointment);
 
       res.sendStatus(201);
     } catch (e) {
@@ -74,15 +73,15 @@ appointmentsRouter.post(
   }
 );
 
-// GET Appointments/:id
+// GET PreAppointments/:id
 
 appointmentsRouter.get(
   "/:id",
   [
     checkPermissions(
       [
-        AppointmentPermissions.ReadAppointments,
-        AppointmentPermissions.ReadSelfAppointments,
+        PreAppointmentPermissions.ReadPreAppointments,
+        PreAppointmentPermissions.ReadSelfPreAppointments,
       ],
       { checkAllScopes: false }
     ),
@@ -91,7 +90,7 @@ appointmentsRouter.get(
     const id: number = parseInt(req.params.id, 10);
 
     try {
-      const appointment: Partial<Appointment> = await AppointmentService.find(
+      const appointment: Partial<PreAppointment> = await PreAppointmentService.find(
         id
       );
 
@@ -102,15 +101,15 @@ appointmentsRouter.get(
   }
 );
 
-// PUT Appointments/
+// PUT PreAppointments/
 
 appointmentsRouter.put(
   "/:id",
   [
     checkPermissions(
       [
-        AppointmentPermissions.UpdateAppointments,
-        AppointmentPermissions.UpdateSelfAppointments,
+        PreAppointmentPermissions.UpdatePreAppointments,
+        PreAppointmentPermissions.UpdateSelfPreAppointments,
       ],
       { checkAllScopes: false }
     ),
@@ -119,9 +118,9 @@ appointmentsRouter.put(
     const id: number = parseInt(req.params.id, 10);
 
     try {
-      const appointment: Appointment = req.body.appointment;
+      const appointment: PreAppointment = req.body.appointment;
 
-      await AppointmentService.update(id, appointment);
+      await PreAppointmentService.update(id, appointment);
 
       res.sendStatus(200);
     } catch (e) {
@@ -130,15 +129,15 @@ appointmentsRouter.put(
   }
 );
 
-// DELETE Appointments/:id
+// DELETE PreAppointments/:id
 
 appointmentsRouter.delete(
   "/:id",
   [
     checkPermissions(
       [
-        AppointmentPermissions.DeleteAppointments,
-        AppointmentPermissions.DeleteSelfAppointments,
+        PreAppointmentPermissions.DeletePreAppointments,
+        PreAppointmentPermissions.DeleteSelfPreAppointments,
       ],
       { checkAllScopes: false }
     ),
@@ -146,7 +145,7 @@ appointmentsRouter.delete(
   async (req: Request, res: Response) => {
     try {
       const id: number = parseInt(req.params.id, 10);
-      await AppointmentService.remove(id);
+      await PreAppointmentService.remove(id);
 
       res.sendStatus(200);
     } catch (e) {

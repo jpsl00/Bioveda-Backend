@@ -12,7 +12,7 @@ import { errorHandler } from "./middleware/error.middleware";
 import { notFoundHandler } from "./middleware/notFound.middleware";
 
 // Routes
-import { appointmentsRouter } from "./appointments/appointments.router";
+import { appointmentsRouter } from "./routes/appointments/appointments.router";
 
 dotenv.config();
 
