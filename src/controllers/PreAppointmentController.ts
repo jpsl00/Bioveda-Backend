@@ -23,7 +23,7 @@ export default class PreAppointmentController {
         break;
     }
     const preAppointments = await preAppointmentRepository.find({
-      select: ["id", "client", "employee", "comment", "createdAt"],
+      select: ["id", "client", "comment", "createdAt"],
       where: where,
     });
 
@@ -48,7 +48,7 @@ export default class PreAppointmentController {
     }
     try {
       const preAppointment = await preAppointmentRepository.findOneOrFail(id, {
-        select: ["id", "client", "employee", "comment", "createdAt"],
+        select: ["id", "client", "comment", "createdAt"],
         where: where,
       });
       res.send(preAppointment);
