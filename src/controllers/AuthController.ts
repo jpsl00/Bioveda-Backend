@@ -39,6 +39,7 @@ class AuthController {
     res.send({
       id: user.id,
       name: user.name,
+      role: user.role,
       token,
     });
   };
