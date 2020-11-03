@@ -25,12 +25,6 @@ export class PreAppointment {
   @ManyToOne((type) => User, (user) => user.id)
   client: User;
 
-  @ManyToOne((type) => User, (user) => user.id)
-  employee: User;
-
-  @ManyToOne((type) => User, (user) => user.id)
-  partner: User;
-
   @OneToMany((type) => Appointment, (appointment) => appointment.preAppointment)
   appointments: Appointment[];
 

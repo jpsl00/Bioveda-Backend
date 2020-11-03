@@ -27,7 +27,7 @@ export class Appointment {
   )
   preAppointment: PreAppointment;
 
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, (user) => user.id)
   client: User;
 
   @ManyToOne((type) => User, (user) => user.id)

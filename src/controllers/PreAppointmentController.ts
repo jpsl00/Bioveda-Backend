@@ -18,14 +18,12 @@ export default class PreAppointmentController {
         where = {};
         break;
       case EPermissionLevel.Partner:
-        where = { partner: userId };
-        break;
       case EPermissionLevel.User:
         where = { client: userId };
         break;
     }
     const preAppointments = await preAppointmentRepository.find({
-      select: ["id", "client", "employee", "partner", "comment", "createdAt"],
+      select: ["id", "client", "employee", "comment", "createdAt"],
       where: where,
     });
 
@@ -44,15 +42,13 @@ export default class PreAppointmentController {
         where = {};
         break;
       case EPermissionLevel.Partner:
-        where = { partner: userId };
-        break;
       case EPermissionLevel.User:
         where = { client: userId };
         break;
     }
     try {
       const preAppointment = await preAppointmentRepository.findOneOrFail(id, {
-        select: ["id", "client", "employee", "partner", "comment", "createdAt"],
+        select: ["id", "client", "employee", "comment", "createdAt"],
         where: where,
       });
       res.send(preAppointment);
@@ -65,8 +61,6 @@ export default class PreAppointmentController {
     let { client, employee, partner, comment } = req.body;
     let preAppointment = new PreAppointment();
     preAppointment.client = client;
-    preAppointment.employee = employee;
-    preAppointment.partner = partner;
     preAppointment.comment = comment;
 
     const errors = await validate(preAppointment);
