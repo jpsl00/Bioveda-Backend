@@ -25,7 +25,7 @@ export default class AppointmentController {
         break;
     }
     const appointments = await appointmentRepository.find({
-      select: ["id", "client", "employee", "partner", "comment", "createdAt"],
+      select: ["id", "client", "partner", "comment", "createdAt"],
       where: where,
     });
 
@@ -52,7 +52,7 @@ export default class AppointmentController {
     }
     try {
       const appointment = await appointmentRepository.findOneOrFail(id, {
-        select: ["id", "client", "employee", "partner", "comment", "createdAt"],
+        select: ["id", "client", "partner", "comment", "createdAt"],
         where: where,
       });
       res.send(appointment);
@@ -62,10 +62,9 @@ export default class AppointmentController {
   };
 
   static newAppointment = async (req: Request, res: Response) => {
-    let { client, employee, partner, comment } = req.body;
+    let { client, partner, comment } = req.body;
     let appointment = new Appointment();
     appointment.client = client;
-    appointment.employee = employee;
     appointment.partner = partner;
     appointment.comment = comment;
 
@@ -157,6 +156,6 @@ export default class AppointmentController {
     }
     appointmentRepository.delete(id);
 
-    res.sendStatus(204);
+    res.status(204).send(appointment);
   };
 }

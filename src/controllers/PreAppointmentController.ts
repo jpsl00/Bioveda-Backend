@@ -58,7 +58,7 @@ export default class PreAppointmentController {
   };
 
   static newPreAppointment = async (req: Request, res: Response) => {
-    let { client, employee, partner, comment } = req.body;
+    let { client, comment } = req.body;
     let preAppointment = new PreAppointment();
     preAppointment.client = client;
     preAppointment.comment = comment;

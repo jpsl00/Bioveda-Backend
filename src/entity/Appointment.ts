@@ -31,9 +31,6 @@ export class Appointment {
   client: User;
 
   @ManyToOne((type) => User, (user) => user.id)
-  employee: User;
-
-  @ManyToOne((type) => User, (user) => user.id)
   partner: User;
 
   @Column()
