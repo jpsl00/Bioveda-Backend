@@ -1,1 +1,1 @@
-web: npm run prod -- --port $PORT
+web: npm start -- --port $PORT
