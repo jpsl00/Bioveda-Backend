@@ -116,4 +116,4 @@ dist
 .pnp.*
 
 # Extra
-database.sqlite
+# database.sqlite
