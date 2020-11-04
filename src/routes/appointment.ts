@@ -1,5 +1,5 @@
 import { Router } from "express";
-import PreAppointmentController from "../controllers/PreAppointmentController";
+import AppointmentController from "../controllers/AppointmentController";
 import { EPermissionLevel } from "../entity/User";
 import { checkJwt } from "../middlewares/checkJwt";
 import { checkRole } from "../middlewares/checkRole";
@@ -9,31 +9,31 @@ const router = Router();
 router.get(
   "/",
   [checkJwt, checkRole(EPermissionLevel.User)],
-  PreAppointmentController.listAll
+  AppointmentController.listAll
 );
 
 router.get(
   "/:id([0-9]+)",
   [checkJwt, checkRole(EPermissionLevel.User)],
-  PreAppointmentController.getOneById
+  AppointmentController.getOneById
 );
 
 router.post(
   "/",
   [checkJwt, checkRole(EPermissionLevel.User, true)],
-  PreAppointmentController.newPreAppointment
+  AppointmentController.newAppointment
 );
 
 router.patch(
   "/:id([0-9]+)",
   [checkJwt, checkRole(EPermissionLevel.User)],
-  PreAppointmentController.editPreAppointment
+  AppointmentController.editAppointment
 );
 
 router.delete(
   "/:id([0-9]+)",
   [checkJwt, checkRole(EPermissionLevel.User)],
-  PreAppointmentController.deletePreAppointment
+  AppointmentController.deleteAppointment
 );
 
 export default router;

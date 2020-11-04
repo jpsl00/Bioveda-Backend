@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { createQueryBuilder, getRepository } from "typeorm";
 import { validate } from "class-validator";
 
 import { PreAppointment } from "../entity/PreAppointment";
@@ -10,22 +10,38 @@ export default class PreAppointmentController {
   static listAll = async (req: Request, res: Response) => {
     const preAppointmentRepository = getRepository(PreAppointment);
     const { permission, id: userId } = await checkRoleReturn(null, res);
+    console.log(userId);
 
-    let where: Object;
+    let where: [string, Object];
     switch (permission) {
       case EPermissionLevel.Admin:
       case EPermissionLevel.Employee:
-        where = {};
+        where = ["", {}];
         break;
       case EPermissionLevel.Partner:
       case EPermissionLevel.User:
-        where = { client: userId };
+        where = ["client.id = :id", { id: userId }];
         break;
     }
-    const preAppointments = await preAppointmentRepository.find({
+    const preAppointments = await createQueryBuilder(PreAppointment, "pa")
+      .where(...where)
+      .select([
+        "pa.id",
+        "client.id",
+        "client.name",
+        "pa.comment",
+        "appoi",
+        "pa.createdAt",
+      ])
+      .leftJoin("pa.client", "client")
+      .leftJoin("pa.appointments", "appoi")
+      .getMany();
+
+    /*   preAppointmentRepository.find({
       select: ["id", "client", "comment", "createdAt"],
+      relations: ["client"],
       where: where,
-    });
+    }); */
 
     res.send(preAppointments);
   };
@@ -62,6 +78,9 @@ export default class PreAppointmentController {
     let preAppointment = new PreAppointment();
     preAppointment.client = client;
     preAppointment.comment = comment;
+    preAppointment.isCanceled = false;
+    preAppointment.appointments = [];
+    console.log(preAppointment);
 
     const errors = await validate(preAppointment);
     if (errors.length > 0) {

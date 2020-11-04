@@ -25,7 +25,11 @@ export class PreAppointment {
   @ManyToOne((type) => User, (user) => user.id)
   client: User;
 
-  @OneToMany((type) => Appointment, (appointment) => appointment.preAppointment)
+  @OneToMany(
+    (type) => Appointment,
+    (appointment) => appointment.preAppointment
+    //{ onDelete: "CASCADE" }
+  )
   appointments: Appointment[];
 
   @Column()

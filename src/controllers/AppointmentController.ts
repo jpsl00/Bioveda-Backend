@@ -62,11 +62,13 @@ export default class AppointmentController {
   };
 
   static newAppointment = async (req: Request, res: Response) => {
-    let { client, partner, comment } = req.body;
+    let { client, partner, comment, preAppointment } = req.body;
     let appointment = new Appointment();
     appointment.client = client;
     appointment.partner = partner;
-    appointment.comment = comment;
+    appointment.comment = comment || null;
+    appointment.preAppointment = preAppointment;
+    appointment.isCanceled = false;
 
     const errors = await validate(appointment);
     if (errors.length > 0) {
@@ -77,6 +79,7 @@ export default class AppointmentController {
     try {
       await appointmentRepository.save(appointment);
     } catch (e) {
+      console.log(e);
       return res.sendStatus(417);
     }
 

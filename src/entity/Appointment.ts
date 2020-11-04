@@ -15,7 +15,7 @@ export class Appointment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   comment: string;
 
   @Column()
@@ -23,7 +23,8 @@ export class Appointment {
 
   @ManyToOne(
     (type) => PreAppointment,
-    (preAppointment) => preAppointment.appointments
+    (preAppointment) => preAppointment.appointments,
+    { onDelete: "CASCADE" }
   )
   preAppointment: PreAppointment;
 
@@ -41,6 +42,6 @@ export class Appointment {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   completedAt: Date;
 }
