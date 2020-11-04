@@ -23,7 +23,7 @@ const mapRoutes = (router: Router, prevPath: string = ""): IMappedRoutes[] => {
       return array.push({ path, routes: mapRoutes(v.handle, path) });
     }
 
-    const path = v.path ?? cleanRoute(v.route.path),
+    const path = v.path || cleanRoute(v.route.path),
       methods = [...Object.keys(v.route.methods)],
       idx = array.findIndex((vi) => vi.path === path);
     if (idx > -1) array[idx].methods.push(...methods);
