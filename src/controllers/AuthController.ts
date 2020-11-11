@@ -5,11 +5,21 @@ import { validate } from "class-validator";
 
 import { User } from "../entity/User";
 import config from "../config/config";
+import { decodeB64 } from "../util/b64-helper";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
     //Check if username and password are set
-    let { username, password } = req.body;
+    const { data } = req.body;
+    let { username, password } = JSON.parse(decodeB64(data));
+
+    if (!(username && password)) {
+      return res.status(400).send();
+    }
+
+    username = decodeB64(username);
+    password = decodeB64(password);
+
     if (!(username && password)) {
       return res.status(400).send();
     }
@@ -37,9 +47,11 @@ class AuthController {
 
     //Send the jwt in the response
     res.send({
-      id: user.id,
-      name: user.name,
-      role: user.role,
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+      },
       token,
     });
   };
