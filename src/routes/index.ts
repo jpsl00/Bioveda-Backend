@@ -60,6 +60,4 @@ routes.get("/", (req, res) => {
   });
 });
 
-console.log(mapRoutes(routes));
-
 export default routes;

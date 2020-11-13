@@ -8,9 +8,7 @@ import { EPermissionLevel } from "../entity/User";
 
 export default class PreAppointmentController {
   static listAll = async (req: Request, res: Response) => {
-    const preAppointmentRepository = getRepository(PreAppointment);
     const { permission, id: userId } = await checkRoleReturn(null, res);
-    console.log(userId);
 
     let where: [string, Object];
     switch (permission) {
@@ -23,6 +21,8 @@ export default class PreAppointmentController {
         where = ["client.id = :id", { id: userId }];
         break;
     }
+
+    const { page, limit } = req.query;
     const preAppointments = await createQueryBuilder(PreAppointment, "pa")
       .where(...where)
       .select([
@@ -35,6 +35,11 @@ export default class PreAppointmentController {
       ])
       .leftJoin("pa.client", "client")
       .leftJoin("pa.appointments", "appoi")
+      .offset(
+        (parseInt((page as string) || "0") - 1) *
+          parseInt((limit as string) || "3")
+      )
+      .limit(parseInt((limit as string) || "3"))
       .getMany();
 
     /*   preAppointmentRepository.find({
@@ -44,6 +49,34 @@ export default class PreAppointmentController {
     }); */
 
     res.send(preAppointments);
+  };
+
+  static countAll = async (req: Request, res: Response) => {
+    const { permission, id: userId } = await checkRoleReturn(null, res);
+    const preAppointmentRepository = getRepository(PreAppointment);
+
+    let where: Object;
+    switch (permission) {
+      case EPermissionLevel.Admin:
+      case EPermissionLevel.Employee:
+        where = {};
+        break;
+      case EPermissionLevel.Partner:
+      case EPermissionLevel.User:
+        where = { client: userId };
+        break;
+    }
+
+    const count = await preAppointmentRepository.count({ where: where });
+
+    res.send({
+      total: count,
+      where,
+      fuck_this_bullshit: {
+        id: res.locals.jwtPayload.userId,
+        role: permission,
+      },
+    });
   };
 
   static getOneById = async (req: Request, res: Response) => {

@@ -36,4 +36,10 @@ router.delete(
   PreAppointmentController.deletePreAppointment
 );
 
+router.get(
+  "/count",
+  [checkJwt, checkRole(EPermissionLevel.User)],
+  PreAppointmentController.countAll
+);
+
 export default router;

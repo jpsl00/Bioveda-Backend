@@ -95,5 +95,24 @@ class AuthController {
 
     res.status(204).send();
   };
+
+  static checkActive = async (req: Request, res: Response) => {
+    // Get JWT
+    const token = req.headers["authorization"];
+
+    try {
+      jwt.verify(token, config.jwtSecret);
+    } catch (e) {
+      return res.status(401).send({
+        status: 401,
+        message: "Invalid Token",
+      });
+    }
+
+    return res.status(200).send({
+      status: 200,
+      message: "Valid Token",
+    });
+  };
 }
 export default AuthController;

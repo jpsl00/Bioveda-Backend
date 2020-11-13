@@ -9,4 +9,7 @@ router.post("/login", AuthController.login);
 //Change my password
 //router.post("/change-password", [checkJwt], AuthController.changePassword);
 
+//Check Token Validity
+router.post("/check", AuthController.checkActive);
+
 export default router;
