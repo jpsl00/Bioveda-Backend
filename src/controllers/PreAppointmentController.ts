@@ -22,7 +22,6 @@ export default class PreAppointmentController {
         break;
     }
 
-    const { page, limit } = req.query;
     const preAppointments = await createQueryBuilder(PreAppointment, "pa")
       .where(...where)
       .select([
@@ -35,11 +34,6 @@ export default class PreAppointmentController {
       ])
       .leftJoin("pa.client", "client")
       .leftJoin("pa.appointments", "appoi")
-      .offset(
-        (parseInt((page as string) || "0") - 1) *
-          parseInt((limit as string) || "3")
-      )
-      .limit(parseInt((limit as string) || "3"))
       .getMany();
 
     /*   preAppointmentRepository.find({
