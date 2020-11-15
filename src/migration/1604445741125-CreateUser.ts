@@ -9,6 +9,7 @@ export class CreateUser1604445741125 implements MigrationInterface {
     user1.username = "cliente1";
     user1.password = "123456";
     user1.name = "Carlos Hideo Arima";
+    user1.birthdate = new Date(1954, 8, 30);
     user1.hashPassword();
     user1.role = EPermissionLevel.User;
 
@@ -16,6 +17,7 @@ export class CreateUser1604445741125 implements MigrationInterface {
     user2.username = "cliente2";
     user2.password = "123456";
     user2.name = "José Paulo Ciscato";
+    user2.birthdate = new Date(1957, 7, 25);
     user2.hashPassword();
     user2.role = EPermissionLevel.User;
 

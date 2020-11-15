@@ -7,6 +7,7 @@ export class CreateEmployeeUser1604445717135 implements MigrationInterface {
     user.username = "funcionário";
     user.password = "123456";
     user.name = "Amanda Marlon";
+    user.birthdate = new Date(1996, 4, 20);
     user.hashPassword();
     user.role = EPermissionLevel.Employee;
     const userRepository = getRepository(User);

@@ -6,18 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
 } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { PreAppointment } from "./PreAppointment";
-
-export enum EPermissionLevel {
-  "Invalid" = -1,
-  "User" = 0,
-  "Partner" = 1,
-  "Employee" = 2,
-  "Admin" = 10,
-}
+import { WorkHour } from "./WorkHour";
 
 @Entity()
 @Unique(["username"])
@@ -33,12 +27,19 @@ export class User {
   @Length(4, 64)
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
+
+  @Column({ nullable: true })
+  email: string;
 
   @Column()
   @IsNotEmpty()
   role: EPermissionLevel;
+
+  @Column()
+  @IsNotEmpty()
+  birthdate: Date;
 
   @Column()
   @CreateDateColumn()
@@ -48,6 +49,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @OneToOne(() => WorkHour)
+  workHours: WorkHour;
+
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 10);
   }
@@ -55,4 +59,12 @@ export class User {
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
     return bcrypt.compareSync(unencryptedPassword, this.password);
   }
+}
+
+export enum EPermissionLevel {
+  "Invalid" = -1,
+  "User" = 0,
+  "Partner" = 1,
+  "Employee" = 2,
+  "Admin" = 10,
 }

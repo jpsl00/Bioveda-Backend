@@ -7,6 +7,7 @@ export class CreatePartnerUser1604445734308 implements MigrationInterface {
     user.username = "médico";
     user.password = "123456";
     user.name = "Marcelo Furtado";
+    user.birthdate = new Date(1983, 8, 17);
     user.hashPassword();
     user.role = EPermissionLevel.Partner;
     const userRepository = getRepository(User);

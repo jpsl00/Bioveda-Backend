@@ -7,6 +7,7 @@ export class CreateAdminUser1547919837483 implements MigrationInterface {
     user.username = "admin";
     user.password = "admin";
     user.name = "Admin";
+    user.birthdate = new Date();
     user.hashPassword();
     user.role = EPermissionLevel.Admin;
     const userRepository = getRepository(User);
