@@ -107,7 +107,6 @@ export default class PreAppointmentController {
     preAppointment.comment = comment;
     preAppointment.isCanceled = false;
     preAppointment.appointments = [];
-    console.log(preAppointment);
 
     const errors = await validate(preAppointment);
     if (errors.length > 0) {

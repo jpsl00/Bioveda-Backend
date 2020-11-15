@@ -79,7 +79,6 @@ export default class AppointmentController {
     try {
       await appointmentRepository.save(appointment);
     } catch (e) {
-      console.log(e);
       return res.sendStatus(417);
     }
 

@@ -6,7 +6,6 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   //Get the jwt token from the head
   let token = <string>req.headers["authorization"] || "";
   token = token.replace(/(Bearer )/, "");
-  console.log(req.headers);
   let jwtPayload;
 
   //Try to validate the token and get data
