@@ -44,7 +44,6 @@ class AuthController {
         id: user.id,
         username: user.username,
         email: user.email,
-        name: user.name,
         role: user.role,
       },
       config.jwtSecret,
@@ -67,7 +66,7 @@ class AuthController {
 
   static changePassword = async (req: Request, res: Response) => {
     //Get ID from JWT
-    const id = res.locals.jwtPayload.userId;
+    const id = res.locals.jwtPayload.id;
 
     //Get parameters from the body
     const { oldPassword, newPassword } = req.body;
@@ -108,9 +107,11 @@ class AuthController {
   static checkActive = async (req: Request, res: Response) => {
     // Get JWT
     const token = req.headers["authorization"];
+    let jwtPayload;
 
     try {
-      jwt.verify(token, config.jwtSecret);
+      jwtPayload = <any>jwt.verify(token, config.jwtSecret);
+      res.locals.jwtPayload = jwtPayload;
     } catch (e) {
       return res.status(401).send({
         status: 401,
@@ -118,9 +119,43 @@ class AuthController {
       });
     }
 
+    //Get ID from JWT
+    const { id } = res.locals.jwtPayload;
+    //Get user from database
+    const userRepository = getRepository(User);
+    let user: User;
+    try {
+      user = await userRepository.findOneOrFail({ where: { id: id } });
+    } catch (error) {
+      return res.status(401).send();
+    }
+
+    //Sign JWT, valid for 1 hour
+    const newToken = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      config.jwtSecret,
+      { expiresIn: "30m" }
+    );
+
     return res.status(200).send({
       status: 200,
       message: "Valid Token",
+      data: {
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          birthdate: user.birthdate,
+        },
+        token: newToken,
+      },
     });
   };
 }

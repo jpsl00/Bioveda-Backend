@@ -6,7 +6,7 @@ import { User, EPermissionLevel } from "../entity/User";
 export const checkRole = (role: EPermissionLevel, exact: boolean = false) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     //Get the user ID from previous midleware
-    const id = res.locals.jwtPayload.userId;
+    const id = res.locals.jwtPayload.id;
 
     //Get user role from the database
     const userRepository = getRepository(User);
@@ -28,7 +28,7 @@ export const checkRoleReturn = async (
   res?: Response
 ): Promise<{ permission: EPermissionLevel; id: number }> => {
   if (!id && !res) return { permission: EPermissionLevel.Invalid, id: null };
-  if (!id) id = res.locals.jwtPayload.userId;
+  if (!id) id = res.locals.jwtPayload.id;
 
   const userRepository = getRepository(User);
   let user: User;

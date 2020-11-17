@@ -12,6 +12,15 @@ import { Length, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { PreAppointment } from "./PreAppointment";
 import { WorkHour } from "./WorkHour";
+import { Appointment } from "./Appointment";
+
+export enum EPermissionLevel {
+  "Invalid" = -1,
+  "User" = 0,
+  "Partner" = 1,
+  "Employee" = 2,
+  "Admin" = 10,
+}
 
 @Entity()
 @Unique(["username"])
@@ -33,12 +42,17 @@ export class User {
   @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
+  address: string;
+
+  @Column({ nullable: true })
+  telephone: string;
+
+  @Column({ default: EPermissionLevel.User })
   @IsNotEmpty()
   role: EPermissionLevel;
 
-  @Column()
-  @IsNotEmpty()
+  @Column({ nullable: true })
   birthdate: Date;
 
   @Column()
@@ -49,8 +63,20 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => WorkHour)
+  @Column({ nullable: true })
+  specialty: string;
+
+  @OneToOne(() => WorkHour, (workHour) => workHour.user, {
+    nullable: true,
+    cascade: true,
+  })
   workHours: WorkHour;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.client)
+  appointments: Appointment[];
+
+  @OneToMany(() => Appointment, (appointment) => appointment.partner)
+  partnerAppointments: Appointment[];
 
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 10);
@@ -59,12 +85,4 @@ export class User {
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
     return bcrypt.compareSync(unencryptedPassword, this.password);
   }
-}
-
-export enum EPermissionLevel {
-  "Invalid" = -1,
-  "User" = 0,
-  "Partner" = 1,
-  "Employee" = 2,
-  "Admin" = 10,
 }

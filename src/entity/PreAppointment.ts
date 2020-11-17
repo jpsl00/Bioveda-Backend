@@ -16,12 +16,37 @@ export class PreAppointment {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // Personal
   @Column()
-  comment: string;
+  personalWeight: string;
 
   @Column()
-  isCanceled: boolean;
+  personalHeight: string;
 
+  @Column()
+  personalAge: string;
+
+  // Medical
+  @Column({ nullable: true })
+  medicalPulse: string;
+
+  @Column({ nullable: true })
+  medicalLanguage: string;
+
+  @Column({ nullable: true, type: "simple-array" })
+  medicalDosha: string;
+
+  @Column({ nullable: true, type: "simple-array" })
+  medicalRecommendations: string[];
+
+  // Complaint
+  @Column()
+  complaintType: string;
+
+  @Column()
+  complaint: string;
+
+  // FKs
   @ManyToOne((type) => User, (user) => user.id)
   client: User;
 

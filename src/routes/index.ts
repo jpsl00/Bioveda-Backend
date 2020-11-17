@@ -3,6 +3,7 @@ import { Router, Request, Response } from "express";
 // * Routes
 import auth from "./auth";
 import user from "./user";
+import partner from "./partner";
 import preAppointment from "./preAppointment";
 import appointment from "./appointment";
 
@@ -50,6 +51,7 @@ const routes = Router();
 
 routes.use("/auth", auth);
 routes.use("/user", user);
+routes.use("/partner", partner);
 routes.use("/pre-appointment", preAppointment);
 routes.use("/appointment", appointment);
 

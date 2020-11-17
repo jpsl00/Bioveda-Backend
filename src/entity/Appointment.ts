@@ -21,6 +21,9 @@ export class Appointment {
   @Column()
   isCanceled: boolean;
 
+  @Column()
+  date: Date;
+
   @ManyToOne(
     (type) => PreAppointment,
     (preAppointment) => preAppointment.appointments,

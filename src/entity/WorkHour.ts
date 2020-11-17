@@ -18,14 +18,8 @@ export class WorkHour {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  start: number;
-
-  @Column()
-  end: number;
-
   @Column({ type: "simple-json" })
-  days: EWorkDays[];
+  days: IWorkDays[];
 
   @OneToOne(() => User, (user) => user.workHours)
   @JoinColumn()
@@ -40,4 +34,10 @@ export enum EWorkDays {
   thu,
   fri,
   sat,
+}
+
+export interface IWorkDays {
+  day: EWorkDays;
+  start: number;
+  end: number;
 }
