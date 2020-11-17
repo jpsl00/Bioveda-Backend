@@ -33,7 +33,7 @@
     "start": "set debug=* && ts-node-dev --respawn --transpile-only -- ./src/index.ts",
     "prod": "tsc && node ./dist/index.js",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
-    "heroku:start": "npm run prod",
+    "heroku:start": "npm run start",
     "heroku:prestart": "npm run migration:run"
   }
 }
