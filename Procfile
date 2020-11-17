@@ -1,1 +1,1 @@
-web: npm heroku:start -- --port $PORT
+web: npm heroku:prestart && npm heroku:start -- --port $PORT
