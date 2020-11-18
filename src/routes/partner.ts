@@ -12,10 +12,10 @@ router.get(
   PartnerController.listAll
 );
 
-/* router.get(
+router.get(
   "/:id([0-9]+)",
   [checkJwt, checkRole(EPermissionLevel.User)],
   PartnerController.getOneById
-); */
+);
 
 export default router;
