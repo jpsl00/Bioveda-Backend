@@ -5,6 +5,7 @@ import { validate } from "class-validator";
 import { PreAppointment } from "../entity/PreAppointment";
 import { checkRoleReturn } from "../middlewares/checkRole";
 import { EPermissionLevel } from "../entity/User";
+import { Appointment } from "../entity/Appointment";
 
 export default class PreAppointmentController {
   static listAll = async (req: Request, res: Response) => {
@@ -47,7 +48,40 @@ export default class PreAppointmentController {
       .leftJoin("pa.appointments", "appointments")
       .getMany();
 
-    const response = preAppointments.map((v) => ({
+    const appointmentRepository = getRepository(Appointment);
+
+    const appointments = await Promise.all(
+      preAppointments.map(async (v) => {
+        const value = await appointmentRepository
+          .find({
+            relations: ["partner", "client"],
+            where: { preAppointment: v.id },
+          })
+          .then((appointments: Appointment[]) =>
+            appointments.map((appointment: Appointment) => ({
+              id: appointment.id,
+              client: {
+                id: appointment.client.id,
+                name: appointment.client.name,
+              },
+              partner: {
+                id: appointment.partner.id,
+                name: appointment.partner.name,
+                specialty: appointment.partner.specialty,
+                address: appointment.partner.address,
+              },
+              date: appointment.date,
+            }))
+          );
+
+        return {
+          id: v.id,
+          appointments: value,
+        };
+      })
+    );
+
+    const response: any[] = preAppointments.map((v) => ({
       id: v.id,
       personal: {
         client: v.client.id,
@@ -69,7 +103,7 @@ export default class PreAppointmentController {
         text: v.complaint,
         type: v.complaintType,
       },
-      appointments: v.appointments,
+      appointments: appointments.find((a) => a.id === v.id).appointments,
     }));
     /*   preAppointmentRepository.find({
       select: ["id", "client", "comment", "createdAt"],

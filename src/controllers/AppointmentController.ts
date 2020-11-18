@@ -26,10 +26,28 @@ export default class AppointmentController {
     }
     const appointments = await appointmentRepository.find({
       select: ["id", "client", "partner", "comment", "createdAt"],
+      relations: ["partner", "client"],
       where: where,
     });
 
-    res.send(appointments);
+    res.send([
+      ...appointments.map((appointment) => ({
+        id: appointment.id,
+        client: {
+          id: appointment.client.id,
+          name: appointment.client.name,
+        },
+        partner: {
+          id: appointment.partner.id,
+          name: appointment.partner.name,
+          specialty: appointment.partner.specialty,
+          address: appointment.partner.address,
+        },
+        date: appointment.date,
+        completedAt: appointment.completedAt,
+        comment: appointment.comment,
+      })),
+    ]);
   };
 
   static getOneById = async (req: Request, res: Response) => {
@@ -62,8 +80,34 @@ export default class AppointmentController {
   };
 
   static newAppointment = async (req: Request, res: Response) => {
-    let { client, partner, comment, preAppointment } = req.body;
-    let appointment = new Appointment();
+    const data = req.body;
+    console.log(data);
+
+    let appointments: Appointment[] = [];
+    for (const appointmentData of data) {
+      const appointment = new Appointment();
+      appointment.client = appointmentData.client;
+      appointment.partner = appointmentData.partner;
+      appointment.date = appointmentData.date;
+      appointment.preAppointment = appointmentData.preAppointment;
+
+      const errors = await validate(appointment);
+      if (errors.length > 0) {
+        return res.status(400).send(errors);
+      }
+
+      appointments.push(appointment);
+    }
+
+    const appointmentRepository = getRepository(Appointment);
+    try {
+      const data = await appointmentRepository.save(appointments);
+      console.log(data);
+      return res.status(201).send(data);
+    } catch (e) {
+      return res.sendStatus(417);
+    }
+    /* let appointment = new Appointment();
     appointment.client = client;
     appointment.partner = partner;
     appointment.comment = comment || null;
@@ -80,7 +124,7 @@ export default class AppointmentController {
       await appointmentRepository.save(appointment);
     } catch (e) {
       return res.sendStatus(417);
-    }
+    } */
 
     res.status(201).send("Appointment created");
   };

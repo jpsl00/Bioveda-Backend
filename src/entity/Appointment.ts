@@ -6,11 +6,13 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
+  Unique,
 } from "typeorm";
 import { PreAppointment } from "./PreAppointment";
 import { User } from "./User";
 
 @Entity()
+@Unique(["date"])
 export class Appointment {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,7 +20,7 @@ export class Appointment {
   @Column({ nullable: true })
   comment: string;
 
-  @Column()
+  @Column({ default: false })
   isCanceled: boolean;
 
   @Column()
