@@ -9,6 +9,9 @@ export class CreatePartnerUser1604445734308 implements MigrationInterface {
     user1.username = "médico1";
     user2.username = "médico2";
     user1.password = user2.password = "123456";
+    user1.address = "Av. Paulista, 2202 - 7º andar conjunto 73";
+    user2.address =
+      "Av. Angélica, 2491 - 9° andar - Bela Vista, São Paulo - SP, 01227-200";
     user1.specialty = "especialidade1";
     user2.specialty = "especialidade2";
     user1.name = "Marcelo Furtado";

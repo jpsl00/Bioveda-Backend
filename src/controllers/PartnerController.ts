@@ -102,16 +102,31 @@ export default class PartnerController {
       message: "Found data",
       status: 200,
       data: [
-        ...data.map((v) => ({
-          id: v.id,
-          comment: v.comment,
-          date: v.date,
-          completedAt: v.completedAt,
-          client: {
-            id: v.client.id,
-            name: v.client.name,
-          },
-        })),
+        ...data.map((v) => {
+          const date = new Date(v.date);
+          date.setHours(0, 0, 0, 0);
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          let type: string = "";
+          if (v.completedAt) type = "is-success";
+          else if (date.getTime() === today.getTime()) type = "is-warning";
+          else if (date.getTime() < today.getTime()) type = "is-danger";
+          else type = "is-info";
+
+          return {
+            id: v.id,
+            comment: v.comment,
+            date: v.date,
+            completedAt: v.completedAt,
+            client: {
+              id: v.client.id,
+              name: v.client.name,
+            },
+            type: type,
+          };
+        }),
       ],
     });
   };

@@ -58,20 +58,35 @@ export default class PreAppointmentController {
             where: { preAppointment: v.id },
           })
           .then((appointments: Appointment[]) =>
-            appointments.map((appointment: Appointment) => ({
-              id: appointment.id,
-              client: {
-                id: appointment.client.id,
-                name: appointment.client.name,
-              },
-              partner: {
-                id: appointment.partner.id,
-                name: appointment.partner.name,
-                specialty: appointment.partner.specialty,
-                address: appointment.partner.address,
-              },
-              date: appointment.date,
-            }))
+            appointments.map((appointment: Appointment) => {
+              const date = new Date(appointment.date);
+              date.setHours(0, 0, 0, 0);
+
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+
+              let type: string = "";
+              if (appointment.completedAt) type = "is-success";
+              else if (date.getTime() === today.getTime()) type = "is-warning";
+              else if (date.getTime() < today.getTime()) type = "is-danger";
+              else type = "is-info";
+
+              return {
+                id: appointment.id,
+                client: {
+                  id: appointment.client.id,
+                  name: appointment.client.name,
+                },
+                partner: {
+                  id: appointment.partner.id,
+                  name: appointment.partner.name,
+                  specialty: appointment.partner.specialty,
+                  address: appointment.partner.address,
+                },
+                date: appointment.date,
+                type: type,
+              };
+            })
           );
 
         return {

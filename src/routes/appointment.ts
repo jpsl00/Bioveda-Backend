@@ -36,4 +36,10 @@ router.delete(
   AppointmentController.deleteAppointment
 );
 
+router.post(
+  "/:id([0-9]+)/conclude",
+  [checkJwt, checkRole(EPermissionLevel.Partner)],
+  AppointmentController.concludeAppointment
+);
+
 export default router;

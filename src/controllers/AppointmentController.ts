@@ -5,6 +5,7 @@ import { validate } from "class-validator";
 import { Appointment } from "../entity/Appointment";
 import { checkRoleReturn } from "../middlewares/checkRole";
 import { EPermissionLevel } from "../entity/User";
+import { type } from "os";
 
 export default class AppointmentController {
   static listAll = async (req: Request, res: Response) => {
@@ -203,5 +204,66 @@ export default class AppointmentController {
     appointmentRepository.delete(id);
 
     res.status(204).send(appointment);
+  };
+
+  static concludeAppointment = async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id);
+    const { permission, id: userId } = await checkRoleReturn(null, res);
+
+    const { comment, isCanceled } = req.body;
+
+    const appointmentRepository = getRepository(Appointment);
+    let where: Object;
+    switch (permission) {
+      case EPermissionLevel.Admin:
+      case EPermissionLevel.Employee:
+        where = {};
+        break;
+      case EPermissionLevel.Partner:
+        where = { partner: userId };
+        break;
+      case EPermissionLevel.User:
+        where = { client: userId };
+        break;
+    }
+    let appointment: Appointment;
+    try {
+      appointment = await appointmentRepository.findOneOrFail(id, {
+        where: where,
+        relations: ["client"],
+      });
+    } catch (error) {
+      return res.status(404).send("Appointment not found");
+    }
+
+    appointment.comment = comment;
+    appointment.completedAt = new Date();
+    const errors = await validate(appointment);
+    if (errors.length > 0) {
+      return res.status(400).send(errors);
+    }
+
+    let savedAppointment: Appointment;
+    try {
+      savedAppointment = await appointmentRepository.save(appointment);
+    } catch (error) {
+      return res.sendStatus(417);
+    }
+
+    res.status(202).send({
+      status: 202,
+      message: "",
+      data: {
+        id: savedAppointment.id,
+        comment: savedAppointment.comment,
+        date: appointment.date,
+        completedAt: savedAppointment.completedAt,
+        client: {
+          id: appointment.client.id,
+          name: appointment.client.name,
+        },
+        type: "is-success",
+      },
+    });
   };
 }
