@@ -101,13 +101,52 @@ export default class AppointmentController {
     }
 
     const appointmentRepository = getRepository(Appointment);
+    let savedAppointments: Appointment[];
     try {
-      const data = await appointmentRepository.save(appointments);
+      savedAppointments = await appointmentRepository.save(appointments);
       console.log(data);
-      return res.status(201).send(data);
     } catch (e) {
       return res.sendStatus(417);
     }
+
+    return res.status(201).send([
+      ...(await Promise.all(
+        savedAppointments.map(async (savedAppointment: Appointment) => {
+          const appointment = await appointmentRepository.findOne(
+            savedAppointment.id,
+            { relations: ["partner", "client"] }
+          );
+
+          const date = new Date(appointment.date);
+          date.setHours(0, 0, 0, 0);
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          let type: string = "";
+          if (appointment.completedAt) type = "is-success";
+          else if (date.getTime() === today.getTime()) type = "is-warning";
+          else if (date.getTime() < today.getTime()) type = "is-danger";
+          else type = "is-info";
+
+          return {
+            id: appointment.id,
+            client: {
+              id: appointment.client.id,
+              name: appointment.client.name,
+            },
+            partner: {
+              id: appointment.partner.id,
+              name: appointment.partner.name,
+              specialty: appointment.partner.specialty,
+              address: appointment.partner.address,
+            },
+            date: appointment.date,
+            type: type,
+          };
+        })
+      )),
+    ]);
     /* let appointment = new Appointment();
     appointment.client = client;
     appointment.partner = partner;
