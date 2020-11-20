@@ -18,4 +18,10 @@ router.get(
   PartnerController.getOneById
 );
 
+router.get(
+  "/me",
+  [checkJwt, checkRole(EPermissionLevel.User)],
+  PartnerController.getMyAppointments
+);
+
 export default router;

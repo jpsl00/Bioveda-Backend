@@ -3,6 +3,9 @@ import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 
 import { EPermissionLevel, User } from "../entity/User";
+import { checkRoleReturn } from "../middlewares/checkRole";
+import { PreAppointment } from "../entity/PreAppointment";
+import { Appointment } from "../entity/Appointment";
 
 export default class PartnerController {
   static listAll = async (req: Request, res: Response) => {
@@ -60,6 +63,56 @@ export default class PartnerController {
           ...user.partnerAppointments.map((v) => (v && v.date ? v.date : "")),
         ],
       },
+    });
+  };
+
+  static getMyAppointments = async (req: Request, res: Response) => {
+    const { id } = await checkRoleReturn(null, res);
+
+    /* const userRepository = getRepository(User);
+    const data = await userRepository.findOne({
+      relations: ["partnerAppointments", "partnerAppointments.preAppointment"],
+      where: {
+        id: id,
+      },
+    }); */
+
+    /* const preAppointmentRepository = getRepository(PreAppointment);
+    const data = await preAppointmentRepository.find({
+      relations: ["appointments", "appointments.partner", "client"],
+      where: {
+        "appointments.partner": id,
+      },
+    }); */
+
+    const appointmentRepository = getRepository(Appointment);
+    const data = await appointmentRepository.find({
+      relations: ["client"],
+      where: { partner: { id: id } },
+    });
+
+    if (!data)
+      return res
+        .status(200)
+        .send({ message: "No data", status: 200, data: [] });
+
+    console.log(data);
+
+    res.status(200).send({
+      message: "Found data",
+      status: 200,
+      data: [
+        ...data.map((v) => ({
+          id: v.id,
+          comment: v.comment,
+          date: v.date,
+          completedAt: v.completedAt,
+          client: {
+            id: v.client.id,
+            name: v.client.name,
+          },
+        })),
+      ],
     });
   };
 }
