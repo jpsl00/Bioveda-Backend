@@ -12,7 +12,6 @@ import { PreAppointment } from "./PreAppointment";
 import { User } from "./User";
 
 @Entity()
-@Unique(["date"])
 export class Appointment {
   @PrimaryGeneratedColumn()
   id: number;
