@@ -14,25 +14,31 @@ router.get(
 );
 
 // Get one user
-router.get(
+/* router.get(
   "/:id([0-9]+)",
   [checkJwt, checkRole(EPermissionLevel.Employee)],
   UserController.getOneById
-);
+); */
+
+// Get me
+router.get("/me", [checkJwt], UserController.getOneById);
 
 //Create a new user
-router.post(
+/* router.post(
   "/",
   [checkJwt, checkRole(EPermissionLevel.Employee)],
   UserController.newUser
-);
+); */
 
 //Edit one user
-router.patch(
+/* router.patch(
   "/:id([0-9]+)",
   [checkJwt, checkRole(EPermissionLevel.Employee)],
   UserController.editUser
-);
+); */
+
+// Edit me
+router.patch("/me", [checkJwt], UserController.editUser);
 
 //Delete one user
 router.delete(

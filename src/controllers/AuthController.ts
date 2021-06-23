@@ -28,7 +28,10 @@ class AuthController {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { username } });
+      user = await userRepository.findOneOrFail({
+        where: { username },
+        relations: ["workHours"],
+      });
     } catch (error) {
       return res.status(401).send();
     }
@@ -42,23 +45,31 @@ class AuthController {
     const token = jwt.sign(
       {
         id: user.id,
+        name: user.name,
         username: user.username,
         email: user.email,
+        address: user.address,
         role: user.role,
+        birthdate: user.birthdate,
+        telephone: user.telephone,
+        workHours: user.workHours,
       },
       config.jwtSecret,
-      { expiresIn: "30m" }
+      { expiresIn: "15m" }
     );
 
     //Send the jwt in the response
     res.send({
       user: {
         id: user.id,
+        name: user.name,
         username: user.username,
         email: user.email,
-        name: user.name,
+        address: user.address,
         role: user.role,
         birthdate: user.birthdate,
+        telephone: user.telephone,
+        workHours: user.workHours,
       },
       token,
     });
@@ -125,7 +136,10 @@ class AuthController {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { id: id } });
+      user = await userRepository.findOneOrFail({
+        where: { id: id },
+        relations: ["workHours"],
+      });
     } catch (error) {
       return res.status(401).send();
     }
@@ -134,12 +148,17 @@ class AuthController {
     const newToken = jwt.sign(
       {
         id: user.id,
+        name: user.name,
         username: user.username,
         email: user.email,
+        address: user.address,
         role: user.role,
+        birthdate: user.birthdate,
+        telephone: user.telephone,
+        workHours: user.workHours,
       },
       config.jwtSecret,
-      { expiresIn: "30m" }
+      { expiresIn: "15m" }
     );
 
     return res.status(200).send({
@@ -148,11 +167,14 @@ class AuthController {
       data: {
         user: {
           id: user.id,
+          name: user.name,
           username: user.username,
           email: user.email,
-          name: user.name,
+          address: user.address,
           role: user.role,
           birthdate: user.birthdate,
+          telephone: user.telephone,
+          workHours: user.workHours,
         },
         token: newToken,
       },

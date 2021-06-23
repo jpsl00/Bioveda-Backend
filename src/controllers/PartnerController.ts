@@ -87,7 +87,7 @@ export default class PartnerController {
 
     const appointmentRepository = getRepository(Appointment);
     const data = await appointmentRepository.find({
-      relations: ["client"],
+      relations: ["client", "partner", "preAppointment"],
       where: { partner: { id: id } },
     });
 
@@ -117,13 +117,36 @@ export default class PartnerController {
 
           return {
             id: v.id,
-            comment: v.comment,
-            date: v.date,
-            completedAt: v.completedAt,
             client: {
               id: v.client.id,
               name: v.client.name,
             },
+            preAppointment: {
+              id: v.id,
+              personal: {
+                client: v.client.id,
+                name: v.client.name,
+                email: v.client.email,
+                address: v.client.address,
+                telephone: v.client.telephone,
+                weight: v.preAppointment.personalWeight,
+                height: v.preAppointment.personalHeight,
+                age: v.preAppointment.personalAge,
+              },
+              medical: {
+                pulse: v.preAppointment.medicalPulse,
+                language: v.preAppointment.medicalLanguage,
+                dosha: v.preAppointment.medicalDosha,
+                recommendations: v.preAppointment.medicalRecommendations,
+              },
+              complaint: {
+                text: v.preAppointment.complaint,
+                type: v.preAppointment.complaintType,
+              },
+            },
+            comment: v.comment,
+            date: v.date,
+            completedAt: v.completedAt,
             type: type,
           };
         }),

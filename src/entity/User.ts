@@ -63,6 +63,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  // ! Apenas para parceiros
   @Column({ nullable: true })
   specialty: string;
 
@@ -72,12 +73,14 @@ export class User {
   })
   workHours: WorkHour;
 
+  // ! Relações
   @OneToMany(() => Appointment, (appointment) => appointment.client)
   appointments: Appointment[];
 
   @OneToMany(() => Appointment, (appointment) => appointment.partner)
   partnerAppointments: Appointment[];
 
+  // ! Funções
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 10);
   }
