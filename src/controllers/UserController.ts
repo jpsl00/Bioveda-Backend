@@ -5,6 +5,7 @@ import { validate } from "class-validator";
 import { User } from "../entity/User";
 import { decodeB64 } from "../util/b64-helper";
 import AuthController from "./AuthController";
+import { WorkHour } from "../entity/WorkHour";
 
 export default class UserController {
   static listAll = async (req: Request, res: Response) => {
@@ -107,7 +108,7 @@ export default class UserController {
     user.address = address;
     user.birthdate = birthdate;
     user.telephone = telephone;
-    if (workHours?.days) user.workHours = workHours.days;
+    if (workHours?.days) user.workHours.days = workHours.days;
     const errors = await validate(user);
     if (errors.length > 0) {
       console.log(errors);
@@ -118,6 +119,7 @@ export default class UserController {
     try {
       await userRepository.save(user);
     } catch (e) {
+      console.log(e);
       return res.status(409).send("Error during save");
     }
     //After all send a 204 (no content, but accepted) response
